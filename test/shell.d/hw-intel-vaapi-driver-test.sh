@@ -79,6 +79,21 @@ assert_driver "Skylake uses intel-media-driver" intel-media-driver
 write_pci_devices 0x8086:0x46a6:0x030000
 assert_driver "Iris Xe uses intel-media-driver" intel-media-driver
 
+# Families pci.ids names only "[Intel Graphics]", which the old name regex
+# missed: Raptor Lake-P/U, Meteor Lake, Arrow Lake, Lunar Lake, Alder Lake-N,
+# Wildcat Lake and discrete Battlemage.
+for id in a7aa a7ab a7ac a7ad 7d40 7d45 7d60 7dd5 7d41 7d67 7dd1 b640 6420 64b0 46d3 46d4 fd80 fd81 e202 e20d e210 e215 e216 e220 e221; do
+  write_pci_devices "0x8086:0x$id:0x030000"
+  assert_driver "unbranded Intel Graphics $id uses intel-media-driver" intel-media-driver
+done
+
+# An Intel GPU that is not the boot display reports class 0380, not 0300.
+write_pci_devices 0x10de:0x2684:0x030000 0x8086:0xa780:0x038000
+assert_driver "a non-boot Intel display controller still gets a package" intel-media-driver
+
+write_pci_devices 0x10de:0x13d8:0x030000 0x8086:0x0416:0x038000
+assert_driver "a Haswell display controller behind NVIDIA uses libva-intel-driver" libva-intel-driver
+
 # GM45 / Mobile 4 Series. ID sits above 0x1600; a bare cutoff would pick iHD.
 write_pci_devices 0x8086:0x2a42:0x030000
 assert_driver "GM45 uses libva-intel-driver" libva-intel-driver
