@@ -106,6 +106,13 @@ assert_driver "Braswell uses libva-intel-driver" libva-intel-driver
 write_pci_devices 0x8086:0x2e32:0x030000
 assert_driver "4 Series uses libva-intel-driver" libva-intel-driver
 
+# Bay Trail: i965 lists 0x0f31-0x0f33 only, though i915 also binds 0x0f30.
+write_pci_devices 0x8086:0x0f31:0x030000
+assert_driver "Bay Trail uses libva-intel-driver" libva-intel-driver
+
+write_pci_devices 0x8086:0x0f30:0x030000
+assert_driver "Bay Trail 0x0f30 has no VAAPI package" none
+
 # Broxton borrows Haswell's 0x0axx prefix but is Gen9. This pins the upper bound
 # of the Haswell block, which nothing else would catch if it widened to 0x0aff.
 write_pci_devices 0x8086:0x0a84:0x030000

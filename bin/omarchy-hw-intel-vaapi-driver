@@ -46,8 +46,9 @@ intel_vaapi_package() {
     return 0
   fi
 
-  # Ironlake, Sandy Bridge, Ivy Bridge, Bay Trail.
-  if (( (n >= 0x0040 && n <= 0x004f) || (n >= 0x0100 && n <= 0x016f) || (n >= 0x0f30 && n <= 0x0f3f) )); then
+  # Ironlake, Sandy Bridge, Ivy Bridge, Bay Trail. i915 also binds Bay Trail
+  # 0x0f30, but i965 does not list it, so it falls through to a skip.
+  if (( (n >= 0x0040 && n <= 0x004f) || (n >= 0x0100 && n <= 0x016f) || (n >= 0x0f31 && n <= 0x0f33) )); then
     echo libva-intel-driver
     return 0
   fi
